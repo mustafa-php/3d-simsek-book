@@ -134,7 +134,9 @@ export class PageFlip {
         inner.appendChild(img);
       }
     } else if (content instanceof HTMLElement) {
-      inner.appendChild(content.cloneNode(true));
+      // Use element directly instead of cloning to preserve dynamic updates
+      // This is important for placeholders that update their content after image loads
+      inner.appendChild(content);
     } else if (content instanceof HTMLCanvasElement) {
       inner.appendChild(content);
     }

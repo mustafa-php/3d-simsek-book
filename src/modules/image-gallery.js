@@ -16,6 +16,33 @@ export class ImageGallery {
     this.loadedImages = new Map();
     this.loadingPromises = new Map();
     this.observer = null;
+    this._stylesInjected = false;
+  }
+  
+  /**
+   * Inject spinner animation styles into document head
+   * Ensures animation works even if CSS file is not loaded
+   */
+  _injectSpinnerStyles() {
+    if (this._stylesInjected) return;
+    
+    // Check if animation already exists
+    const existingStyle = document.getElementById('simsek-spinner-styles');
+    if (existingStyle) {
+      this._stylesInjected = true;
+      return;
+    }
+    
+    const styleElement = document.createElement('style');
+    styleElement.id = 'simsek-spinner-styles';
+    styleElement.textContent = `
+      @keyframes simsek-spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    `;
+    document.head.appendChild(styleElement);
+    this._stylesInjected = true;
   }
   
   /**
@@ -128,6 +155,9 @@ export class ImageGallery {
       return null;
     }
     
+    // Inject spinner styles to ensure animation works
+    this._injectSpinnerStyles();
+    
     // Yüklü ise resmi döndür
     if (this.loadedImages.has(index)) {
       const img = this.loadedImages.get(index);
@@ -136,10 +166,14 @@ export class ImageGallery {
       return clone;
     }
     
+    // Generate unique ID for this placeholder
+    const placeholderId = `simsek-placeholder-${index}-${Date.now()}`;
+    
     // Placeholder oluştur
     const placeholder = document.createElement('div');
     placeholder.className = 'simsek-image-placeholder';
     placeholder.dataset.index = index;
+    placeholder.dataset.placeholderId = placeholderId;
     placeholder.style.cssText = `
       width: 100%;
       height: 100%;
@@ -164,14 +198,32 @@ export class ImageGallery {
     
     // Resmi arka planda yükle
     this._loadImage(index).then((img) => {
-      if (placeholder.parentNode) {
-        const clone = img.cloneNode(true);
-        clone.style.cssText = 'max-width: 100%; max-height: 100%; object-fit: contain;';
-        placeholder.innerHTML = '';
-        placeholder.appendChild(clone);
-      }
+      // Find all placeholders with this index (original and clones)
+      // Use querySelectorAll to find all matching placeholders in DOM
+      const placeholders = document.querySelectorAll(
+        `.simsek-image-placeholder[data-index="${index}"]`
+      );
+      
+      placeholders.forEach((ph) => {
+        // Only update if placeholder still has spinner (not already updated)
+        if (ph.querySelector('.simsek-spinner')) {
+          const clone = img.cloneNode(true);
+          clone.style.cssText = 'max-width: 100%; max-height: 100%; object-fit: contain;';
+          ph.innerHTML = '';
+          ph.appendChild(clone);
+        }
+      });
     }).catch(() => {
-      placeholder.innerHTML = '<span style="color: #999;">Failed to load image</span>';
+      // Find all placeholders with this index for error state
+      const placeholders = document.querySelectorAll(
+        `.simsek-image-placeholder[data-index="${index}"]`
+      );
+      
+      placeholders.forEach((ph) => {
+        if (ph.querySelector('.simsek-spinner')) {
+          ph.innerHTML = '<span style="color: #999;">Failed to load image</span>';
+        }
+      });
     });
     
     // Observer'a ekle
