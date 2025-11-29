@@ -155,25 +155,27 @@ export class ImageGallery {
       return null;
     }
     
+    // Validate index is a safe integer for use in CSS selectors
+    const safeIndex = parseInt(index, 10);
+    if (!Number.isInteger(safeIndex) || safeIndex < 0) {
+      return null;
+    }
+    
     // Inject spinner styles to ensure animation works
     this._injectSpinnerStyles();
     
     // Yüklü ise resmi döndür
-    if (this.loadedImages.has(index)) {
-      const img = this.loadedImages.get(index);
+    if (this.loadedImages.has(safeIndex)) {
+      const img = this.loadedImages.get(safeIndex);
       const clone = img.cloneNode(true);
       clone.style.cssText = 'max-width: 100%; max-height: 100%; object-fit: contain;';
       return clone;
     }
     
-    // Generate unique ID for this placeholder
-    const placeholderId = `simsek-placeholder-${index}-${Date.now()}`;
-    
     // Placeholder oluştur
     const placeholder = document.createElement('div');
     placeholder.className = 'simsek-image-placeholder';
-    placeholder.dataset.index = index;
-    placeholder.dataset.placeholderId = placeholderId;
+    placeholder.dataset.index = safeIndex;
     placeholder.style.cssText = `
       width: 100%;
       height: 100%;
@@ -197,11 +199,11 @@ export class ImageGallery {
     placeholder.appendChild(spinner);
     
     // Resmi arka planda yükle
-    this._loadImage(index).then((img) => {
+    this._loadImage(safeIndex).then((img) => {
       // Find all placeholders with this index (original and clones)
       // Use querySelectorAll to find all matching placeholders in DOM
       const placeholders = document.querySelectorAll(
-        `.simsek-image-placeholder[data-index="${index}"]`
+        `.simsek-image-placeholder[data-index="${safeIndex}"]`
       );
       
       placeholders.forEach((ph) => {
@@ -216,7 +218,7 @@ export class ImageGallery {
     }).catch(() => {
       // Find all placeholders with this index for error state
       const placeholders = document.querySelectorAll(
-        `.simsek-image-placeholder[data-index="${index}"]`
+        `.simsek-image-placeholder[data-index="${safeIndex}"]`
       );
       
       placeholders.forEach((ph) => {
