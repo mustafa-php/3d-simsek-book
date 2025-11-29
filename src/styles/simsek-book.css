@@ -382,13 +382,13 @@
 /* Smooth 60fps animation optimization */
 .simsek-3d-spread,
 .simsek-3d-page,
-.simsek-page-shadow,
-.simsek-curl-overlay,
+/* Smooth 60fps animation optimization - only for animated elements */
+.simsek-3d-spread,
 .simsek-corner-curl {
   -webkit-transform: translateZ(0);
   transform: translateZ(0);
   -webkit-backface-visibility: hidden;
-  -webkit-perspective: 1000;
+  -webkit-perspective: 1000px;
 }
 
 /* Enhanced page flip keyframes with curl effect */

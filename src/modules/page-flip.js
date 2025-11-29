@@ -303,10 +303,22 @@ export class PageFlip {
   
   _animateToAngle(element, targetAngle) {
     return new Promise((resolve) => {
+      const handleTransitionEnd = (e) => {
+        if (e.propertyName === 'transform') {
+          element.removeEventListener('transitionend', handleTransitionEnd);
+          resolve();
+        }
+      };
+      
+      element.addEventListener('transitionend', handleTransitionEnd);
       element.style.transition = `transform ${this.options.duration * 0.5}ms cubic-bezier(0.22, 1, 0.36, 1)`;
       element.style.transform = `rotateY(${targetAngle}deg)`;
       
-      setTimeout(resolve, this.options.duration * 0.5);
+      // Fallback timeout in case transitionend doesn't fire
+      setTimeout(() => {
+        element.removeEventListener('transitionend', handleTransitionEnd);
+        resolve();
+      }, this.options.duration * 0.5 + 50);
     });
   }
   
@@ -630,6 +642,19 @@ export class PageFlip {
     cornerHint.addEventListener('mouseleave', () => {
       curlVisual.style.borderWidth = '0 40px 40px 0';
     });
+    
+    // Store references for cleanup - attach to spread element
+    spread._cornerHintListeners = {
+      spreadEnter: () => {
+        if (!this.isDragging && !this.isFlipping) {
+          cornerHint.style.opacity = '1';
+        }
+      },
+      spreadLeave: () => {
+        cornerHint.style.opacity = '0';
+        curlVisual.style.borderWidth = '0 40px 40px 0';
+      }
+    };
   }
   
   _adjustColor(color, amount) {
@@ -812,6 +837,13 @@ export class PageFlip {
   
   _animateFlip(element, fromAngle, toAngle) {
     return new Promise((resolve) => {
+      const handleTransitionEnd = (e) => {
+        if (e.propertyName === 'transform') {
+          element.removeEventListener('transitionend', handleTransitionEnd);
+          resolve();
+        }
+      };
+      
       // Set initial state
       element.style.transition = 'none';
       element.style.transform = `rotateY(${fromAngle}deg)`;
@@ -819,11 +851,18 @@ export class PageFlip {
       // Force reflow
       element.offsetHeight;
       
+      // Add transition listener
+      element.addEventListener('transitionend', handleTransitionEnd);
+      
       // Animate with smooth easing
       element.style.transition = `transform ${this.options.duration}ms cubic-bezier(0.22, 1, 0.36, 1)`;
       element.style.transform = `rotateY(${toAngle}deg)`;
       
-      setTimeout(resolve, this.options.duration);
+      // Fallback timeout in case transitionend doesn't fire
+      setTimeout(() => {
+        element.removeEventListener('transitionend', handleTransitionEnd);
+        resolve();
+      }, this.options.duration + 50);
     });
   }
   
@@ -855,7 +894,7 @@ export class PageFlip {
    * Clean up resources
    */
   destroy() {
-    // Remove event listeners
+    // Remove event listeners from document
     if (this.options.enableDragFlip) {
       this.bookElement.removeEventListener('mousedown', this._boundHandleMouseDown);
       document.removeEventListener('mousemove', this._boundHandleMouseMove);
@@ -870,9 +909,19 @@ export class PageFlip {
       cancelAnimationFrame(this.animationFrame);
     }
     
+    // Clear page references to allow garbage collection
+    this.pages.forEach(spread => {
+      spread._cornerHintListeners = null;
+    });
+    this.pages = [];
+    
+    // Remove book element from DOM
     if (this.bookElement) {
       this.bookElement.remove();
+      this.bookElement = null;
     }
-    this.pages = [];
+    
+    // Clear drag state
+    this.dragPage = null;
   }
 }
