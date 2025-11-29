@@ -84,17 +84,57 @@
       border-radius: 3px;
       font-family: monospace;
     }
+    
+    .features {
+      margin-top: 20px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      color: #888;
+    }
+    
+    .features h3 {
+      color: #00d9ff;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+    
+    .features ul {
+      list-style: none;
+      font-size: 12px;
+    }
+    
+    .features li {
+      margin: 5px 0;
+    }
+    
+    .features li::before {
+      content: '✓ ';
+      color: #28a745;
+    }
   </style>
 </head>
 <body>
-  <h1>📚 <span>SimsekBook</span> - Basic Example</h1>
+  <h1>📚 <span>SimsekBook</span> - 3D Page Flip Example</h1>
   <p class="description">
-    A modern 3D page-flipping flipbook library. Use the controls below or keyboard shortcuts to navigate.
+    A modern 3D page-flipping flipbook library with realistic page curl effects, dynamic shadows, and interactive drag-to-flip support.
   </p>
   
   <div id="book-container"></div>
   
-  <p class="info">Try clicking the navigation arrows, using keyboard shortcuts, or swiping on touch devices!</p>
+  <p class="info">Try clicking the navigation arrows, dragging pages, using keyboard shortcuts, or swiping on touch devices!</p>
+  
+  <div class="features">
+    <h3>✨ New 3D Features</h3>
+    <ul>
+      <li>Realistic page curl effect with corner hints</li>
+      <li>Dynamic shadows during page flip</li>
+      <li>Double-sided pages with paper texture</li>
+      <li>Drag to flip with mouse or touch</li>
+      <li>Smooth 60fps animations</li>
+      <li>Book spine shadow effect</li>
+    </ul>
+  </div>
   
   <div class="shortcuts">
     <h3>⌨️ Keyboard Shortcuts</h3>
@@ -124,17 +164,30 @@
       'https://picsum.photos/400/500?random=10'
     ];
     
-    // Initialize the book
+    // Initialize the book with 3D page flip settings
     const book = new SimsekBook('#book-container', {
       pages: pages,
       width: 900,
       height: 600,
+      
+      // 3D Page Flip Settings
       pageFlipDuration: 800,
+      perspective: 2500,
+      pageThickness: 2,
+      enablePageCurl: true,
+      curlIntensity: 0.3,
+      shadowIntensity: 0.4,
+      enableDragFlip: true,
+      pageBackColor: '#f5f5dc',
+      
+      // Other settings
       enableSound: true,
       enableZoom: true,
       enableBookmarks: true,
       enableThumbnails: true,
       enableKeyboard: true,
+      
+      // Callbacks
       onPageFlip: (pageNumber) => {
         console.log(`Page flipped to: ${pageNumber + 1}`);
       },
@@ -145,7 +198,7 @@
         console.log(`Page ${page + 1} ${isBookmarked ? 'bookmarked' : 'unbookmarked'}`);
       },
       onReady: (instance) => {
-        console.log('SimsekBook is ready!', instance);
+        console.log('SimsekBook is ready with 3D page flip!', instance);
       }
     });
     
