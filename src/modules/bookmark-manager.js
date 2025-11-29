@@ -1,6 +1,6 @@
 /**
- * BookmarkManager - Sayfa işaretleme modülü
- * LocalStorage'da bookmark kaydetme
+ * BookmarkManager - Page Bookmarking Module
+ * Persist bookmarks to LocalStorage
  */
 export class BookmarkManager {
   constructor(options = {}) {

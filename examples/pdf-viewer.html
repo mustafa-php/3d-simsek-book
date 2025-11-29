@@ -5,8 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SimsekBook - PDF Viewer Example</title>
   <link rel="stylesheet" href="../src/styles/simsek-book.css">
-  <!-- PDF.js Library -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <!-- PDF.js Library with integrity check -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js" 
+          integrity="sha512-q+4liFwdPC4bv1WJsWBIjhwBLMA5fQ1v3PsVPDVWtTHR3Of7JqvWFrfFCE6xqEdnxL5DJkfqTM9hOYad18It0A==" 
+          crossorigin="anonymous" 
+          referrerpolicy="no-referrer"></script>
   <style>
     * {
       margin: 0;
@@ -250,11 +253,9 @@
     
     // Sample PDF button
     document.getElementById('load-sample').addEventListener('click', () => {
-      // Using a public sample PDF
-      const samplePDF = 'https://raw.githubusercontent.com/nicholasstacy88/pd/main/sample.pdf';
-      
-      // Since we might have CORS issues with external PDFs, let's create a sample book instead
-      alert('Note: Due to CORS restrictions, external PDFs may not load directly. Try uploading a local PDF file.');
+      // Note: Loading external PDFs requires CORS support
+      // For security, we demonstrate with placeholder images instead
+      alert('Note: For security and CORS reasons, external PDFs cannot be loaded directly. Upload a local PDF file or use the demo with placeholder images.');
       
       // Create a demo with placeholder images instead
       if (book) {

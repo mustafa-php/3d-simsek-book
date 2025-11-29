@@ -1,6 +1,6 @@
 /**
- * KeyboardNav - Klavye navigasyonu modülü
- * Sol/Sağ ok tuşları, Home/End, Page Up/Down, Escape, +/- kontrolü
+ * KeyboardNav - Keyboard Navigation Module
+ * Arrow keys, Home/End, Page Up/Down, Escape, +/- controls
  */
 export class KeyboardNav {
   constructor(options = {}) {

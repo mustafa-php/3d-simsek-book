@@ -1,5 +1,6 @@
 /**
- * PDFLoader - PDF.js entegrasyonu ile PDF dosyalarını yükleme ve görüntüleme
+ * PDFLoader - PDF Loading and Display Module
+ * Integration with PDF.js for rendering PDF documents
  */
 export class PDFLoader {
   constructor(options = {}) {

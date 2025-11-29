@@ -87,6 +87,12 @@
 
 /* ============ Book Container ============ */
 .simsek-book-area {
+  /* Fallback for browsers without color-mix support */
+  background: linear-gradient(135deg, 
+    var(--simsek-book-bg) 0%, 
+    #1a1a1a 100%
+  );
+  /* Modern browsers with color-mix support */
   background: linear-gradient(135deg, 
     var(--simsek-book-bg) 0%, 
     color-mix(in srgb, var(--simsek-book-bg) 80%, black) 100%

@@ -1,6 +1,6 @@
 /**
- * AudioManager - Ses efektleri modülü
- * Sayfa çevirme sesleri ve kontrolleri
+ * AudioManager - Sound Effects Module
+ * Page flip sounds and audio controls
  */
 export class AudioManager {
   constructor(options = {}) {

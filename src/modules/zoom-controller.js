@@ -1,6 +1,6 @@
 /**
- * ZoomController - Zoom kontrolü modülü
- * Pinch-to-zoom, mouse wheel zoom, çift tıklama zoom
+ * ZoomController - Zoom Control Module
+ * Pinch-to-zoom, mouse wheel zoom, double-tap zoom
  */
 export class ZoomController {
   constructor(container, options = {}) {

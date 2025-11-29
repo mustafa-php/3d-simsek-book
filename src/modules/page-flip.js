@@ -1,6 +1,6 @@
 /**
  * PageFlip - 3D Page Flip Engine
- * CSS3 3D transforms kullanarak gerçekçi sayfa çevirme efekti
+ * Realistic page flipping effect using CSS3 3D transforms
  */
 export class PageFlip {
   constructor(container, options = {}) {

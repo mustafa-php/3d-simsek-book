@@ -141,7 +141,11 @@ export class SimsekBook {
     if (typeof pages === 'string') {
       return pages.replace(/[^a-zA-Z0-9]/g, '_');
     }
-    return `book_${Date.now()}`;
+    // Use crypto.randomUUID if available, otherwise fallback to timestamp + random
+    if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+      return `book_${crypto.randomUUID()}`;
+    }
+    return `book_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
   }
   
   _setupContainer() {

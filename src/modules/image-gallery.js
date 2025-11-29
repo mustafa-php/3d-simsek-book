@@ -1,6 +1,6 @@
 /**
- * ImageGallery - Birden fazla resmi flipbook olarak görüntüleme
- * Lazy loading ile performans optimizasyonu
+ * ImageGallery - Display multiple images as a flipbook
+ * Performance optimization with lazy loading
  */
 export class ImageGallery {
   constructor(options = {}) {

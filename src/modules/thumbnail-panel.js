@@ -1,6 +1,6 @@
 /**
- * ThumbnailPanel - Sayfa önizleme modülü
- * Lazy loading thumbnails
+ * ThumbnailPanel - Page Preview Module
+ * Lazy loading thumbnails for page navigation
  */
 export class ThumbnailPanel {
   constructor(container, options = {}) {
