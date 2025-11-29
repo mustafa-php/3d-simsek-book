@@ -202,8 +202,12 @@ export class ImageGallery {
     this._loadImage(safeIndex).then((img) => {
       // Find all placeholders with this index (original and clones)
       // Use querySelectorAll to find all matching placeholders in DOM
+      // safeIndex is guaranteed to be a non-negative integer, but we use CSS.escape for safety
+      const escapedIndex = typeof CSS !== 'undefined' && CSS.escape 
+        ? CSS.escape(String(safeIndex)) 
+        : String(safeIndex);
       const placeholders = document.querySelectorAll(
-        `.simsek-image-placeholder[data-index="${safeIndex}"]`
+        `.simsek-image-placeholder[data-index="${escapedIndex}"]`
       );
       
       placeholders.forEach((ph) => {
@@ -217,8 +221,11 @@ export class ImageGallery {
       });
     }).catch(() => {
       // Find all placeholders with this index for error state
+      const escapedIndex = typeof CSS !== 'undefined' && CSS.escape 
+        ? CSS.escape(String(safeIndex)) 
+        : String(safeIndex);
       const placeholders = document.querySelectorAll(
-        `.simsek-image-placeholder[data-index="${safeIndex}"]`
+        `.simsek-image-placeholder[data-index="${escapedIndex}"]`
       );
       
       placeholders.forEach((ph) => {
