@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SimsekBook - Basic Example</title>
+  <link rel="stylesheet" href="../src/styles/simsek-book.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    
+    h1 {
+      color: #fff;
+      margin-bottom: 20px;
+      text-align: center;
+      font-weight: 300;
+    }
+    
+    h1 span {
+      background: linear-gradient(90deg, #00d9ff, #7b2cbf);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 600;
+    }
+    
+    .description {
+      color: #aaa;
+      text-align: center;
+      margin-bottom: 30px;
+      max-width: 600px;
+    }
+    
+    #book-container {
+      margin-bottom: 30px;
+    }
+    
+    .info {
+      color: #888;
+      font-size: 14px;
+      text-align: center;
+    }
+    
+    .shortcuts {
+      margin-top: 20px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      color: #888;
+    }
+    
+    .shortcuts h3 {
+      color: #fff;
+      margin-bottom: 10px;
+      font-size: 14px;
+    }
+    
+    .shortcuts ul {
+      list-style: none;
+      font-size: 12px;
+    }
+    
+    .shortcuts li {
+      margin: 5px 0;
+    }
+    
+    .shortcuts kbd {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <h1>📚 <span>SimsekBook</span> - Basic Example</h1>
+  <p class="description">
+    A modern 3D page-flipping flipbook library. Use the controls below or keyboard shortcuts to navigate.
+  </p>
+  
+  <div id="book-container"></div>
+  
+  <p class="info">Try clicking the navigation arrows, using keyboard shortcuts, or swiping on touch devices!</p>
+  
+  <div class="shortcuts">
+    <h3>⌨️ Keyboard Shortcuts</h3>
+    <ul>
+      <li><kbd>←</kbd> <kbd>→</kbd> Navigate pages</li>
+      <li><kbd>Home</kbd> / <kbd>End</kbd> First/Last page</li>
+      <li><kbd>+</kbd> / <kbd>-</kbd> Zoom in/out</li>
+      <li><kbd>Space</kbd> Next page</li>
+      <li><kbd>Esc</kbd> Exit fullscreen</li>
+    </ul>
+  </div>
+  
+  <script type="module">
+    import { SimsekBook } from '../src/simsek-book.js';
+    
+    // Sample pages with placeholder images
+    const pages = [
+      'https://picsum.photos/400/500?random=1',
+      'https://picsum.photos/400/500?random=2',
+      'https://picsum.photos/400/500?random=3',
+      'https://picsum.photos/400/500?random=4',
+      'https://picsum.photos/400/500?random=5',
+      'https://picsum.photos/400/500?random=6',
+      'https://picsum.photos/400/500?random=7',
+      'https://picsum.photos/400/500?random=8',
+      'https://picsum.photos/400/500?random=9',
+      'https://picsum.photos/400/500?random=10'
+    ];
+    
+    // Initialize the book
+    const book = new SimsekBook('#book-container', {
+      pages: pages,
+      width: 900,
+      height: 600,
+      pageFlipDuration: 800,
+      enableSound: true,
+      enableZoom: true,
+      enableBookmarks: true,
+      enableThumbnails: true,
+      enableKeyboard: true,
+      onPageFlip: (pageNumber) => {
+        console.log(`Page flipped to: ${pageNumber + 1}`);
+      },
+      onZoom: (level) => {
+        console.log(`Zoom level: ${level}`);
+      },
+      onBookmark: (page, isBookmarked) => {
+        console.log(`Page ${page + 1} ${isBookmarked ? 'bookmarked' : 'unbookmarked'}`);
+      },
+      onReady: (instance) => {
+        console.log('SimsekBook is ready!', instance);
+      }
+    });
+    
+    // Expose to window for debugging
+    window.book = book;
+  </script>
+</body>
+</html>
