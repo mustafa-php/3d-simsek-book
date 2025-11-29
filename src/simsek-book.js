@@ -44,7 +44,16 @@ export class SimsekBook {
       height: options.height || 600,
       
       // Animation
-      pageFlipDuration: options.pageFlipDuration || 1000,
+      pageFlipDuration: options.pageFlipDuration || 800,
+      
+      // 3D Page Flip Settings
+      perspective: options.perspective || 2500,
+      pageThickness: options.pageThickness || 2,
+      enablePageCurl: options.enablePageCurl !== false,
+      curlIntensity: options.curlIntensity || 0.3,
+      shadowIntensity: options.shadowIntensity || 0.4,
+      enableDragFlip: options.enableDragFlip !== false,
+      pageBackColor: options.pageBackColor || '#f5f5dc',
       
       // Sound
       enableSound: options.enableSound !== false,
@@ -164,6 +173,11 @@ export class SimsekBook {
       user-select: none;
     `;
     
+    // Set 3D CSS custom properties
+    this.container.style.setProperty('--simsek-page-back-color', this.options.pageBackColor);
+    this.container.style.setProperty('--simsek-perspective', `${this.options.perspective}px`);
+    this.container.style.setProperty('--simsek-flip-duration', `${this.options.pageFlipDuration}ms`);
+    
     // Main book area
     this.bookArea = document.createElement('div');
     this.bookArea.className = 'simsek-book-area';
@@ -174,7 +188,7 @@ export class SimsekBook {
       display: flex;
       align-items: center;
       justify-content: center;
-      perspective: 2000px;
+      perspective: ${this.options.perspective}px;
     `;
     
     // Book container (for pages)
@@ -254,9 +268,16 @@ export class SimsekBook {
       onToggleFullscreen: () => this.toggleFullscreen()
     });
     
-    // Page Flip Engine
+    // Page Flip Engine with 3D settings
     this.pageFlip = new PageFlip(this.bookContainer, {
       duration: this.options.pageFlipDuration,
+      perspective: this.options.perspective,
+      pageThickness: this.options.pageThickness,
+      enablePageCurl: this.options.enablePageCurl,
+      curlIntensity: this.options.curlIntensity,
+      shadowIntensity: this.options.shadowIntensity,
+      enableDragFlip: this.options.enableDragFlip,
+      pageBackColor: this.options.pageBackColor,
       onFlipStart: (page, direction) => {
         this.audioManager.playPageFlip();
       },
