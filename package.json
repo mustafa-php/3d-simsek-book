@@ -1,0 +1,57 @@
+{
+  "name": "3d-simsek-book",
+  "version": "1.0.0",
+  "description": "Modern 3D page-flipping (flipbook) JavaScript library with PDF support, touch gestures, zoom, bookmarks, and more",
+  "main": "src/simsek-book.js",
+  "module": "src/simsek-book.js",
+  "type": "module",
+  "scripts": {
+    "dev": "npx http-server . -p 8080 -c-1",
+    "build": "echo 'No build required - ES Modules ready'",
+    "test": "echo 'Tests would run here'"
+  },
+  "keywords": [
+    "flipbook",
+    "3d",
+    "page-flip",
+    "pdf-viewer",
+    "javascript",
+    "es-modules",
+    "touch",
+    "responsive",
+    "zoom",
+    "bookmarks"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mustafa-php/3d-simsek-book.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mustafa-php/3d-simsek-book/issues"
+  },
+  "homepage": "https://github.com/mustafa-php/3d-simsek-book#readme",
+  "devDependencies": {},
+  "peerDependencies": {
+    "pdfjs-dist": ">=3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "pdfjs-dist": {
+      "optional": true
+    }
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "files": [
+    "src/",
+    "dist/",
+    "assets/",
+    "README.md",
+    "LICENSE"
+  ],
+  "browser": {
+    "./src/simsek-book.js": "./src/simsek-book.js"
+  }
+}

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SimsekBook - PDF Viewer Example</title>
+  <link rel="stylesheet" href="../src/styles/simsek-book.css">
+  <!-- PDF.js Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    h1 {
+      color: #fff;
+      margin: 20px 0;
+      text-align: center;
+      font-weight: 300;
+    }
+    
+    h1 span {
+      background: linear-gradient(90deg, #f093fb, #f5576c);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 600;
+    }
+    
+    .description {
+      color: #aaa;
+      text-align: center;
+      margin-bottom: 20px;
+      max-width: 600px;
+    }
+    
+    .pdf-upload {
+      margin-bottom: 20px;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      text-align: center;
+    }
+    
+    .pdf-upload label {
+      color: #fff;
+      display: block;
+      margin-bottom: 10px;
+    }
+    
+    .pdf-upload input[type="file"] {
+      display: none;
+    }
+    
+    .upload-btn {
+      display: inline-block;
+      padding: 12px 24px;
+      background: linear-gradient(90deg, #f093fb, #f5576c);
+      color: #fff;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    
+    .upload-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(240, 147, 251, 0.3);
+    }
+    
+    .or-text {
+      color: #666;
+      margin: 15px 0;
+    }
+    
+    .sample-btn {
+      padding: 10px 20px;
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    
+    .sample-btn:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+    
+    #book-container {
+      margin-bottom: 30px;
+    }
+    
+    .loading {
+      color: #fff;
+      text-align: center;
+      padding: 40px;
+    }
+    
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(255, 255, 255, 0.2);
+      border-top-color: #f093fb;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 20px;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .pdf-info {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 8px;
+      color: #aaa;
+      font-size: 14px;
+    }
+    
+    .pdf-info h3 {
+      color: #fff;
+      margin-bottom: 10px;
+    }
+    
+    #loading-status {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>📄 <span>SimsekBook</span> - PDF Viewer</h1>
+  <p class="description">
+    View PDF documents as beautiful flipbooks. Upload your own PDF or try with a sample.
+  </p>
+  
+  <div class="pdf-upload">
+    <label>Select a PDF file to view</label>
+    <label for="pdf-input" class="upload-btn">📁 Choose PDF File</label>
+    <input type="file" id="pdf-input" accept=".pdf">
+    <p class="or-text">— or —</p>
+    <button class="sample-btn" id="load-sample">Load Sample PDF</button>
+  </div>
+  
+  <div id="loading-status" class="loading">
+    <div class="loading-spinner"></div>
+    <p>Loading PDF... <span id="progress">0%</span></p>
+  </div>
+  
+  <div id="book-container"></div>
+  
+  <div id="pdf-info" class="pdf-info" style="display: none;">
+    <h3>📋 PDF Information</h3>
+    <p><strong>Title:</strong> <span id="pdf-title"></span></p>
+    <p><strong>Pages:</strong> <span id="pdf-pages"></span></p>
+    <p><strong>Author:</strong> <span id="pdf-author"></span></p>
+  </div>
+  
+  <script type="module">
+    import { SimsekBook, PDFLoader } from '../src/simsek-book.js';
+    
+    let book = null;
+    
+    async function loadPDF(source) {
+      // Clean up existing book
+      if (book) {
+        book.destroy();
+        book = null;
+      }
+      
+      // Show loading
+      document.getElementById('loading-status').style.display = 'block';
+      document.getElementById('book-container').innerHTML = '';
+      document.getElementById('pdf-info').style.display = 'none';
+      
+      try {
+        // Load PDF using PDFLoader
+        const pdfLoader = new PDFLoader({ scale: 1.5 });
+        const metadata = await pdfLoader.load(source);
+        
+        // Update PDF info
+        document.getElementById('pdf-title').textContent = metadata.title || 'Untitled';
+        document.getElementById('pdf-pages').textContent = metadata.numPages;
+        document.getElementById('pdf-author').textContent = metadata.author || 'Unknown';
+        
+        // Render all pages
+        const pages = await pdfLoader.renderAllPages({
+          onProgress: (current, total) => {
+            const percent = Math.round((current / total) * 100);
+            document.getElementById('progress').textContent = `${percent}%`;
+          }
+        });
+        
+        // Hide loading
+        document.getElementById('loading-status').style.display = 'none';
+        document.getElementById('pdf-info').style.display = 'block';
+        
+        // Create SimsekBook with canvas elements
+        book = new SimsekBook('#book-container', {
+          pages: pages,
+          width: 950,
+          height: 650,
+          pageFlipDuration: 800,
+          enableSound: true,
+          enableZoom: true,
+          zoomMax: 4,
+          enableBookmarks: true,
+          enableThumbnails: true,
+          bookId: metadata.title || 'pdf-book',
+          onReady: () => {
+            console.log('PDF loaded successfully!');
+          }
+        });
+        
+        window.book = book;
+        
+      } catch (error) {
+        console.error('Failed to load PDF:', error);
+        document.getElementById('loading-status').innerHTML = `
+          <p style="color: #f5576c;">❌ Failed to load PDF: ${error.message}</p>
+          <p style="color: #888; font-size: 12px; margin-top: 10px;">
+            Make sure PDF.js library is loaded and the PDF file is valid.
+          </p>
+        `;
+      }
+    }
+    
+    // File input handler
+    document.getElementById('pdf-input').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (file && file.type === 'application/pdf') {
+        const arrayBuffer = await file.arrayBuffer();
+        loadPDF({ data: arrayBuffer });
+      }
+    });
+    
+    // Sample PDF button
+    document.getElementById('load-sample').addEventListener('click', () => {
+      // Using a public sample PDF
+      const samplePDF = 'https://raw.githubusercontent.com/nicholasstacy88/pd/main/sample.pdf';
+      
+      // Since we might have CORS issues with external PDFs, let's create a sample book instead
+      alert('Note: Due to CORS restrictions, external PDFs may not load directly. Try uploading a local PDF file.');
+      
+      // Create a demo with placeholder images instead
+      if (book) {
+        book.destroy();
+      }
+      
+      document.getElementById('loading-status').style.display = 'none';
+      
+      const demoPages = [
+        'https://picsum.photos/400/550?random=1',
+        'https://picsum.photos/400/550?random=2',
+        'https://picsum.photos/400/550?random=3',
+        'https://picsum.photos/400/550?random=4',
+        'https://picsum.photos/400/550?random=5',
+        'https://picsum.photos/400/550?random=6'
+      ];
+      
+      book = new SimsekBook('#book-container', {
+        pages: demoPages,
+        width: 950,
+        height: 650,
+        pageFlipDuration: 800,
+        enableSound: true,
+        enableZoom: true,
+        enableBookmarks: true,
+        enableThumbnails: true
+      });
+      
+      document.getElementById('pdf-info').style.display = 'block';
+      document.getElementById('pdf-title').textContent = 'Sample Demo Book';
+      document.getElementById('pdf-pages').textContent = demoPages.length;
+      document.getElementById('pdf-author').textContent = 'SimsekBook Demo';
+      
+      window.book = book;
+    });
+  </script>
+</body>
+</html>

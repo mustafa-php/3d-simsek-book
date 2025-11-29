@@ -1,0 +1,656 @@
+/**
+ * SimsekBook - CSS Styles
+ * Modern, customizable flipbook styles
+ */
+
+/* ============ CSS Custom Properties ============ */
+:root {
+  /* Colors */
+  --simsek-primary: #007bff;
+  --simsek-primary-dark: #0056b3;
+  --simsek-secondary: #6c757d;
+  --simsek-success: #28a745;
+  --simsek-danger: #dc3545;
+  --simsek-warning: #ffc107;
+  --simsek-info: #17a2b8;
+  
+  /* Book */
+  --simsek-book-bg: #2a2a2a;
+  --simsek-page-bg: #ffffff;
+  --simsek-page-shadow: rgba(0, 0, 0, 0.15);
+  
+  /* Controls */
+  --simsek-controls-bg: rgba(0, 0, 0, 0.85);
+  --simsek-btn-bg: rgba(255, 255, 255, 0.1);
+  --simsek-btn-hover-bg: rgba(255, 255, 255, 0.2);
+  --simsek-btn-active-bg: rgba(255, 255, 255, 0.3);
+  
+  /* Navigation */
+  --simsek-nav-arrow-bg: rgba(0, 0, 0, 0.5);
+  
+  /* Text */
+  --simsek-text-color: #333333;
+  --simsek-text-light: #ffffff;
+  --simsek-text-muted: #999999;
+  --simsek-page-number-color: #666666;
+  
+  /* Panels */
+  --simsek-panel-bg: #ffffff;
+  --simsek-border-color: #eeeeee;
+  --simsek-hover-bg: #f5f5f5;
+  
+  /* Thumbnails */
+  --simsek-thumbnail-bg: #f5f5f5;
+  --simsek-thumbnail-number-bg: #f8f8f8;
+  
+  /* Bookmark */
+  --simsek-bookmark-color: #ff4444;
+  
+  /* Spinner */
+  --simsek-spinner-color: #dddddd;
+  
+  /* Placeholder */
+  --simsek-placeholder-bg: #f0f0f0;
+  
+  /* Effects */
+  --simsek-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  --simsek-border-radius: 8px;
+  --simsek-transition-duration: 0.3s;
+}
+
+/* ============ Dark Theme ============ */
+.simsek-book.simsek-dark,
+[data-theme="dark"] .simsek-book {
+  --simsek-book-bg: #1a1a1a;
+  --simsek-page-bg: #2d2d2d;
+  --simsek-text-color: #e0e0e0;
+  --simsek-panel-bg: #2d2d2d;
+  --simsek-border-color: #404040;
+  --simsek-hover-bg: #3d3d3d;
+  --simsek-thumbnail-bg: #2d2d2d;
+  --simsek-thumbnail-number-bg: #3d3d3d;
+  --simsek-placeholder-bg: #3d3d3d;
+  --simsek-page-number-color: #999999;
+}
+
+/* ============ Base Styles ============ */
+.simsek-book {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.simsek-book * {
+  box-sizing: border-box;
+}
+
+/* ============ Book Container ============ */
+.simsek-book-area {
+  background: linear-gradient(135deg, 
+    var(--simsek-book-bg) 0%, 
+    color-mix(in srgb, var(--simsek-book-bg) 80%, black) 100%
+  );
+}
+
+.simsek-book-container {
+  background: transparent;
+}
+
+/* ============ Pages ============ */
+.simsek-book-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  perspective: 2000px;
+  transform-style: preserve-3d;
+}
+
+.simsek-spread {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  transform-style: preserve-3d;
+  transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.simsek-page {
+  position: relative;
+  width: 50%;
+  height: 100%;
+  background: var(--simsek-page-bg);
+  overflow: hidden;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+.simsek-page-left {
+  box-shadow: 
+    -2px 0 10px var(--simsek-page-shadow),
+    inset 10px 0 20px -10px rgba(0, 0, 0, 0.1);
+  border-radius: 4px 0 0 4px;
+}
+
+.simsek-page-right {
+  box-shadow: 
+    2px 0 10px var(--simsek-page-shadow),
+    inset -10px 0 20px -10px rgba(0, 0, 0, 0.1);
+  border-radius: 0 4px 4px 0;
+}
+
+.simsek-page-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 10px;
+}
+
+.simsek-page-inner img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+.simsek-page-number {
+  position: absolute;
+  bottom: 10px;
+  font-size: 12px;
+  color: var(--simsek-page-number-color);
+  font-weight: 500;
+}
+
+.simsek-page-left .simsek-page-number {
+  left: 15px;
+}
+
+.simsek-page-right .simsek-page-number {
+  right: 15px;
+}
+
+/* ============ Page Flip Animation ============ */
+@keyframes simsek-flip-right {
+  0% {
+    transform: rotateY(0deg);
+  }
+  100% {
+    transform: rotateY(-180deg);
+  }
+}
+
+@keyframes simsek-flip-left {
+  0% {
+    transform: rotateY(-180deg);
+  }
+  100% {
+    transform: rotateY(0deg);
+  }
+}
+
+.simsek-spread.flipping-right {
+  animation: simsek-flip-right 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  transform-origin: left center;
+}
+
+.simsek-spread.flipping-left {
+  animation: simsek-flip-left 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  transform-origin: left center;
+}
+
+/* ============ Controls ============ */
+.simsek-controls {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.simsek-btn {
+  background: var(--simsek-btn-bg);
+  border: none;
+  color: var(--simsek-text-light);
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--simsek-transition-duration) ease, 
+              transform 0.1s ease;
+  outline: none;
+}
+
+.simsek-btn:hover {
+  background: var(--simsek-btn-hover-bg);
+}
+
+.simsek-btn:active {
+  background: var(--simsek-btn-active-bg);
+  transform: scale(0.95);
+}
+
+.simsek-btn:focus-visible {
+  box-shadow: 0 0 0 2px var(--simsek-primary);
+}
+
+.simsek-btn-nav {
+  font-size: 20px;
+  width: 44px;
+  height: 44px;
+}
+
+.simsek-page-indicator {
+  color: var(--simsek-text-light);
+  font-size: 14px;
+  min-width: 80px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============ Navigation Arrows ============ */
+.simsek-nav-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 50px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--simsek-nav-arrow-bg);
+  color: var(--simsek-text-light);
+  font-size: 28px;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--simsek-transition-duration) ease,
+              background var(--simsek-transition-duration) ease;
+  z-index: 100;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.simsek-nav-left {
+  left: 15px;
+}
+
+.simsek-nav-right {
+  right: 15px;
+}
+
+.simsek-nav-arrow:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.simsek-book-area:hover .simsek-nav-arrow {
+  opacity: 1;
+}
+
+/* ============ Zoom ============ */
+.simsek-zoom-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  cursor: default;
+}
+
+.simsek-zoom-wrapper.zoomed {
+  cursor: grab;
+}
+
+.simsek-zoom-wrapper.zoomed.panning {
+  cursor: grabbing;
+}
+
+.simsek-zoom-content {
+  width: 100%;
+  height: 100%;
+  transform-origin: center center;
+  transition: transform 0.2s ease-out;
+  will-change: transform;
+}
+
+/* ============ Panels ============ */
+.simsek-thumbnail-panel,
+.simsek-bookmark-panel {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  background: var(--simsek-panel-bg);
+  z-index: 1000;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: transform var(--simsek-transition-duration) ease;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+}
+
+.simsek-thumbnail-panel {
+  left: 0;
+  width: 180px;
+  transform: translateX(-100%);
+}
+
+.simsek-bookmark-panel {
+  right: 0;
+  width: 250px;
+  transform: translateX(100%);
+}
+
+.simsek-thumbnail-panel.open {
+  transform: translateX(0);
+}
+
+.simsek-bookmark-panel.open {
+  transform: translateX(0);
+}
+
+.simsek-thumbnail-header,
+.simsek-bookmark-panel-header {
+  padding: 15px;
+  border-bottom: 1px solid var(--simsek-border-color);
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  background: var(--simsek-panel-bg);
+  z-index: 10;
+}
+
+.simsek-panel-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--simsek-text-color);
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+  padding: 0;
+  line-height: 1;
+}
+
+.simsek-panel-close:hover {
+  opacity: 1;
+}
+
+/* ============ Thumbnails ============ */
+.simsek-thumbnail-container {
+  flex: 1;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.simsek-thumbnail {
+  width: 100%;
+  cursor: pointer;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 2px solid transparent;
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+  background: var(--simsek-thumbnail-bg);
+}
+
+.simsek-thumbnail:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.simsek-thumbnail.active {
+  border-color: var(--simsek-primary);
+}
+
+.simsek-thumbnail-image {
+  width: 100%;
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background: var(--simsek-page-bg);
+}
+
+.simsek-thumbnail-image img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.simsek-thumbnail-number {
+  padding: 8px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--simsek-text-color);
+  background: var(--simsek-thumbnail-number-bg);
+  font-weight: 500;
+}
+
+/* ============ Bookmarks ============ */
+.simsek-bookmark-indicator {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 24px;
+  height: 30px;
+  cursor: pointer;
+  z-index: 100;
+  transition: transform 0.2s ease;
+}
+
+.simsek-bookmark-indicator:hover {
+  transform: scale(1.15);
+}
+
+.simsek-bookmark-indicator svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.simsek-bookmark-list {
+  flex: 1;
+}
+
+.simsek-bookmark-item {
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--simsek-border-color);
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background var(--simsek-transition-duration) ease;
+}
+
+.simsek-bookmark-item:hover {
+  background: var(--simsek-hover-bg);
+}
+
+.simsek-bookmark-remove {
+  background: none;
+  border: none;
+  color: var(--simsek-danger);
+  cursor: pointer;
+  font-size: 16px;
+  opacity: 0.7;
+  transition: opacity 0.2s ease;
+  padding: 4px;
+}
+
+.simsek-bookmark-remove:hover {
+  opacity: 1;
+}
+
+/* ============ Placeholder & Loading ============ */
+.simsek-image-placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--simsek-placeholder-bg);
+}
+
+.simsek-thumbnail-placeholder {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--simsek-spinner-color);
+  border-top-color: var(--simsek-primary);
+  border-radius: 50%;
+  animation: simsek-spin 1s linear infinite;
+}
+
+.simsek-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--simsek-spinner-color);
+  border-top-color: var(--simsek-primary);
+  border-radius: 50%;
+  animation: simsek-spin 1s linear infinite;
+}
+
+@keyframes simsek-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* ============ Fullscreen ============ */
+.simsek-book:fullscreen,
+.simsek-book:-webkit-full-screen {
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: none !important;
+  border-radius: 0 !important;
+}
+
+/* ============ Accessibility ============ */
+.simsek-btn:focus-visible,
+.simsek-thumbnail:focus-visible,
+.simsek-bookmark-item:focus-visible {
+  outline: 2px solid var(--simsek-primary);
+  outline-offset: 2px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .simsek-spread,
+  .simsek-zoom-content,
+  .simsek-thumbnail,
+  .simsek-btn,
+  .simsek-nav-arrow,
+  .simsek-thumbnail-panel,
+  .simsek-bookmark-panel {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+/* ============ Responsive ============ */
+@media (max-width: 768px) {
+  .simsek-controls {
+    height: 44px;
+    gap: 5px;
+    padding: 0 10px;
+  }
+  
+  .simsek-btn {
+    width: 32px;
+    height: 32px;
+    font-size: 14px;
+  }
+  
+  .simsek-btn-nav {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
+  
+  .simsek-page-indicator {
+    font-size: 12px;
+    min-width: 60px;
+  }
+  
+  .simsek-nav-arrow {
+    width: 40px;
+    height: 60px;
+    font-size: 24px;
+  }
+  
+  .simsek-nav-left {
+    left: 5px;
+  }
+  
+  .simsek-nav-right {
+    right: 5px;
+  }
+  
+  .simsek-thumbnail-panel {
+    width: 140px;
+  }
+  
+  .simsek-thumbnail-image {
+    height: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .simsek-controls {
+    height: 40px;
+    gap: 3px;
+    padding: 0 5px;
+  }
+  
+  .simsek-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+  
+  .simsek-btn-nav {
+    width: 32px;
+    height: 32px;
+    font-size: 16px;
+  }
+  
+  /* Hide some controls on very small screens */
+  .simsek-btn-thumb,
+  .simsek-btn-bookmark {
+    display: none;
+  }
+  
+  .simsek-thumbnail-panel {
+    width: 120px;
+  }
+  
+  .simsek-thumbnail-image {
+    height: 100px;
+  }
+}
+
+/* ============ Print ============ */
+@media print {
+  .simsek-book {
+    box-shadow: none !important;
+  }
+  
+  .simsek-controls,
+  .simsek-nav-arrow,
+  .simsek-thumbnail-panel,
+  .simsek-bookmark-panel,
+  .simsek-bookmark-indicator {
+    display: none !important;
+  }
+}

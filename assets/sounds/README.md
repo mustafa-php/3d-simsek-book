@@ -1,0 +1,1 @@
+# Page Flip Sound\n\nThis directory should contain page-flip.mp3 sound file.\n\nYou can use any page flip sound effect. Some free sources:\n- freesound.org\n- zapsplat.com\n- soundsnap.com\n\nRecommended format: MP3, ~100KB, 0.1-0.3 seconds duration.

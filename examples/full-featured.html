@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SimsekBook - Full Featured Demo</title>
+  <link rel="stylesheet" href="../src/styles/simsek-book.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #0a0a0a;
+      min-height: 100vh;
+      color: #fff;
+    }
+    
+    .header {
+      padding: 20px;
+      text-align: center;
+      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    }
+    
+    .header h1 {
+      font-weight: 300;
+      margin-bottom: 5px;
+    }
+    
+    .header h1 span {
+      font-weight: 700;
+    }
+    
+    .header p {
+      opacity: 0.8;
+      font-size: 14px;
+    }
+    
+    .main-content {
+      display: flex;
+      min-height: calc(100vh - 80px);
+    }
+    
+    .sidebar {
+      width: 280px;
+      background: #111;
+      padding: 20px;
+      border-right: 1px solid #222;
+      overflow-y: auto;
+    }
+    
+    .book-area {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: radial-gradient(ellipse at center, #1a1a2e 0%, #0a0a0a 100%);
+    }
+    
+    .section {
+      margin-bottom: 25px;
+    }
+    
+    .section-title {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #667eea;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #222;
+    }
+    
+    .control-group {
+      margin-bottom: 15px;
+    }
+    
+    .control-group label {
+      display: block;
+      font-size: 13px;
+      color: #aaa;
+      margin-bottom: 6px;
+    }
+    
+    .control-group input[type="range"] {
+      width: 100%;
+      height: 6px;
+      background: #333;
+      border-radius: 3px;
+      outline: none;
+      -webkit-appearance: none;
+    }
+    
+    .control-group input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px;
+      height: 16px;
+      background: #667eea;
+      border-radius: 50%;
+      cursor: pointer;
+    }
+    
+    .control-group input[type="number"] {
+      width: 100%;
+      padding: 8px;
+      background: #222;
+      border: 1px solid #333;
+      border-radius: 4px;
+      color: #fff;
+      font-size: 14px;
+    }
+    
+    .toggle-group {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    
+    .toggle-group span {
+      font-size: 13px;
+      color: #aaa;
+    }
+    
+    .toggle {
+      position: relative;
+      width: 44px;
+      height: 24px;
+      background: #333;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    
+    .toggle.active {
+      background: #667eea;
+    }
+    
+    .toggle::after {
+      content: '';
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      width: 20px;
+      height: 20px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform 0.3s ease;
+    }
+    
+    .toggle.active::after {
+      transform: translateX(20px);
+    }
+    
+    .btn {
+      width: 100%;
+      padding: 10px;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      margin-bottom: 8px;
+      transition: opacity 0.2s ease, transform 0.1s ease;
+    }
+    
+    .btn:hover {
+      opacity: 0.9;
+    }
+    
+    .btn:active {
+      transform: scale(0.98);
+    }
+    
+    .btn-outline {
+      background: transparent;
+      border: 1px solid #667eea;
+      color: #667eea;
+    }
+    
+    .btn-outline:hover {
+      background: rgba(102, 126, 234, 0.1);
+    }
+    
+    .status {
+      font-size: 12px;
+      color: #666;
+      margin-top: 15px;
+      padding: 10px;
+      background: #0a0a0a;
+      border-radius: 4px;
+    }
+    
+    .status-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+    
+    .status-value {
+      color: #667eea;
+    }
+    
+    .theme-buttons {
+      display: flex;
+      gap: 8px;
+    }
+    
+    .theme-btn {
+      flex: 1;
+      padding: 8px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: transform 0.2s ease;
+    }
+    
+    .theme-btn:hover {
+      transform: scale(1.05);
+    }
+    
+    .theme-btn.light {
+      background: #f5f5f5;
+      color: #333;
+    }
+    
+    .theme-btn.dark {
+      background: #333;
+      color: #fff;
+    }
+    
+    @media (max-width: 900px) {
+      .main-content {
+        flex-direction: column;
+      }
+      
+      .sidebar {
+        width: 100%;
+        max-height: 300px;
+        border-right: none;
+        border-bottom: 1px solid #222;
+      }
+      
+      .book-area {
+        min-height: 500px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <h1>📚 <span>SimsekBook</span> - Full Featured Demo</h1>
+    <p>Experience all features of the 3D FlipBook library</p>
+  </header>
+  
+  <div class="main-content">
+    <aside class="sidebar">
+      <div class="section">
+        <h3 class="section-title">📖 Navigation</h3>
+        <button class="btn" onclick="book.prevPage()">← Previous Page</button>
+        <button class="btn" onclick="book.nextPage()">Next Page →</button>
+        <div class="control-group">
+          <label>Go to page:</label>
+          <input type="number" id="page-input" min="1" placeholder="Page number" 
+                 onchange="book.goToPage(parseInt(this.value) - 1)">
+        </div>
+      </div>
+      
+      <div class="section">
+        <h3 class="section-title">🔍 Zoom Controls</h3>
+        <div class="control-group">
+          <label>Zoom Level: <span id="zoom-value">100%</span></label>
+          <input type="range" id="zoom-slider" min="100" max="300" value="100"
+                 oninput="handleZoomSlider(this.value)">
+        </div>
+        <button class="btn btn-outline" onclick="book.resetZoom()">Reset Zoom</button>
+      </div>
+      
+      <div class="section">
+        <h3 class="section-title">⚙️ Settings</h3>
+        <div class="toggle-group">
+          <span>🔊 Sound</span>
+          <div class="toggle active" id="sound-toggle" onclick="toggleSound()"></div>
+        </div>
+        <div class="toggle-group">
+          <span>📑 Thumbnails</span>
+          <div class="toggle" id="thumb-toggle" onclick="toggleThumbnails()"></div>
+        </div>
+        <div class="toggle-group">
+          <span>🔖 Bookmark Current</span>
+          <div class="toggle" id="bookmark-toggle" onclick="toggleBookmark()"></div>
+        </div>
+      </div>
+      
+      <div class="section">
+        <h3 class="section-title">🎨 Theme</h3>
+        <div class="theme-buttons">
+          <button class="theme-btn light" onclick="setTheme('light')">☀️ Light</button>
+          <button class="theme-btn dark" onclick="setTheme('dark')">🌙 Dark</button>
+        </div>
+      </div>
+      
+      <div class="section">
+        <h3 class="section-title">⛶ Display</h3>
+        <button class="btn" onclick="book.toggleFullscreen()">Toggle Fullscreen</button>
+        <button class="btn btn-outline" onclick="startAutoPlay()">▶️ Auto Play</button>
+        <button class="btn btn-outline" onclick="book.stopAutoPlay()">⏹️ Stop</button>
+      </div>
+      
+      <div class="status">
+        <h4 style="margin-bottom: 10px; color: #fff;">📊 Status</h4>
+        <div class="status-item">
+          <span>Current Page:</span>
+          <span class="status-value" id="status-page">1-2 / 10</span>
+        </div>
+        <div class="status-item">
+          <span>Zoom Level:</span>
+          <span class="status-value" id="status-zoom">100%</span>
+        </div>
+        <div class="status-item">
+          <span>Bookmarks:</span>
+          <span class="status-value" id="status-bookmarks">0</span>
+        </div>
+        <div class="status-item">
+          <span>Sound:</span>
+          <span class="status-value" id="status-sound">On</span>
+        </div>
+      </div>
+    </aside>
+    
+    <main class="book-area">
+      <div id="book-container"></div>
+    </main>
+  </div>
+  
+  <script type="module">
+    import { SimsekBook } from '../src/simsek-book.js';
+    
+    // Sample pages
+    const pages = Array.from({ length: 16 }, (_, i) => 
+      `https://picsum.photos/seed/demo${i}/500/650`
+    );
+    
+    // Initialize book
+    const book = new SimsekBook('#book-container', {
+      pages: pages,
+      width: 850,
+      height: 580,
+      pageFlipDuration: 800,
+      enableSound: true,
+      soundVolume: 0.5,
+      enableZoom: true,
+      zoomMin: 1,
+      zoomMax: 3,
+      enableBookmarks: true,
+      enableThumbnails: true,
+      enableKeyboard: true,
+      enableSwipe: true,
+      bookId: 'full-featured-demo',
+      onPageFlip: (page) => {
+        updateStatus();
+        document.getElementById('page-input').value = page + 1;
+      },
+      onZoom: (level) => {
+        document.getElementById('zoom-value').textContent = Math.round(level * 100) + '%';
+        document.getElementById('zoom-slider').value = level * 100;
+        updateStatus();
+      },
+      onBookmark: (page, isBookmarked) => {
+        updateStatus();
+        document.getElementById('bookmark-toggle').classList.toggle('active', isBookmarked);
+      },
+      onReady: () => {
+        console.log('Full featured demo ready!');
+        updateStatus();
+      }
+    });
+    
+    // Make book globally accessible
+    window.book = book;
+    
+    // Update status panel
+    window.updateStatus = function() {
+      const current = book.getCurrentPage();
+      const total = book.getTotalPages();
+      document.getElementById('status-page').textContent = 
+        `${current + 1}-${Math.min(current + 2, total)} / ${total}`;
+      document.getElementById('status-zoom').textContent = 
+        Math.round(book.getZoom() * 100) + '%';
+      document.getElementById('status-bookmarks').textContent = 
+        book.getBookmarks().length;
+      
+      // Update bookmark toggle
+      document.getElementById('bookmark-toggle').classList.toggle(
+        'active', book.isBookmarked()
+      );
+    };
+    
+    // Toggle handlers
+    window.toggleSound = function() {
+      const enabled = book.toggleSound();
+      document.getElementById('sound-toggle').classList.toggle('active', enabled);
+      document.getElementById('status-sound').textContent = enabled ? 'On' : 'Off';
+    };
+    
+    window.toggleThumbnails = function() {
+      const isOpen = book.toggleThumbnails();
+      document.getElementById('thumb-toggle').classList.toggle('active', isOpen);
+    };
+    
+    window.toggleBookmark = function() {
+      book.toggleBookmark();
+    };
+    
+    // Zoom slider handler
+    window.handleZoomSlider = function(value) {
+      const level = parseInt(value) / 100;
+      book.zoom(level);
+      document.getElementById('zoom-value').textContent = value + '%';
+    };
+    
+    // Theme handler
+    window.setTheme = function(theme) {
+      const container = document.getElementById('book-container');
+      const bookEl = container.querySelector('.simsek-book');
+      if (bookEl) {
+        if (theme === 'dark') {
+          bookEl.classList.add('simsek-dark');
+        } else {
+          bookEl.classList.remove('simsek-dark');
+        }
+      }
+    };
+    
+    // Auto-play
+    window.startAutoPlay = function() {
+      book.startAutoPlay();
+    };
+    
+    // Initial status update
+    setTimeout(updateStatus, 500);
+  </script>
+</body>
+</html>
